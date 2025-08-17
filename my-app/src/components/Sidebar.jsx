@@ -12,11 +12,11 @@ function Sidebar() {
   ];
 
   return (
-    <div className="h-screen w-64 bg-white-900 text-white flex flex-col justify-between">
+    <div className="h-screen w-64 bg-white-900 text-white flex flex-col justify-between ">
       {/* Top Menu */}
       <div>
-        <div className="p-4 bg-green-900 text-center rounded-b-xl cursor-pointer flex items-center justify-center gap-2">
-            <h1 className="text-2xl font-bold mb-6 text-white-400">InfraGuard AI</h1>
+        <div className="p-4 bg-green-900 text-center cursor-pointer flex items-center justify-center gap-2 mb-6">
+            <h1 className="text-2xl font-bold mb-2 text-white-400">InfraGuard AI</h1>
         </div>
         <ul className="space-y-3">
           {menuItems.map((item) => (
@@ -37,9 +37,9 @@ function Sidebar() {
       </div>
 
       {/* Account Section (Bottom) */}
-      <div className="p-4 bg-green-900 text-center rounded-t-xl cursor-pointer flex items-center justify-center gap-2">
-        <Settings size={18} />
-        <span className="font-semibold">Account</span>
+      <div className="p-4 bg-gray-300 text-center cursor-pointer flex items-center justify-center gap-2">
+        <Settings className="text-gray-900" size={18} />
+        <span className="font-semibold text-gray-800">Account</span>
       </div>
     </div>
   );
