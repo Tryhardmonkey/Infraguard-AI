@@ -18,10 +18,15 @@ const upload = multer({ storage });
 // ✅ GET all reports
 router.get("/", async (req, res) => {
   try {
-    const result = await db.query("SELECT * FROM reports");
+    const result = await db.query(`
+      SELECT r.id, r.date, r.project_id, p.status, p.projectname
+      FROM reports r
+      JOIN projects p ON r.project_id = p.id
+      ORDER BY r.date DESC
+    `);
     res.json(result.rows);
   } catch (err) {
-    console.error("❌ Error fetching reports:", err);
+    console.error(err);
     res.status(500).json({ error: "Server error" });
   }
 });

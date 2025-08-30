@@ -30,7 +30,6 @@ export default function Reports() {
             <table className="w-full text-left border-collapse">
               <thead className="bg-gray-100">
                 <tr>
-                  <th className="px-6 py-3 font-medium">REPORT NAME</th>
                   <th className="px-6 py-3 font-medium">PROJECT</th>
                   <th className="px-6 py-3 font-medium">DATE</th>
                   <th className="px-6 py-3 font-medium">STATUS</th>
@@ -40,9 +39,8 @@ export default function Reports() {
               <tbody>
                 {reports.map((report, idx) => (
                   <tr key={idx} className="border-t">
-                    <td className="px-6 py-3">{report.name}</td>
-                    <td className="px-6 py-3">{report.project}</td>
-                    <td className="px-6 py-3">{report.date}</td>
+                    <td className="px-6 py-3">{report.projectname}</td>
+                    <td className="px-6 py-3">{new Date(report.date).toLocaleDateString()}</td>
                     <td className="px-6 py-3">
                       <span className={`px-3 py-1 rounded-full text-sm ${report.statusColor}`}>
                         {report.status}
