@@ -4,15 +4,56 @@ import Progress from "@/components/ui/Progress";
 import UploadSection from "@/components/UploadForm";
 import { Wallet, Calendar, CheckCircle, AlertTriangle, FileUp, Bell } from "lucide-react";
 import CircularProgress from "@/components/ui/circularprogress";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import NewProject from "@/components/NewProject";
 
 export default function Home() {
+  const [projects, setProjects] = useState([]);
+  const [showForm, setShowForm] = useState(false);
+
+  useEffect(() => {
+    axios.get("http://localhost:5000/api/projects/ongoing")
+      .then((res) => setProjects(res.data))
+      .catch((err) => console.error("❌ Error fetching ongoing projects:", err));
+  }, []);
+
   return (
     <div className="p-6 space-y-6">
+      <div>
       {/* Top Section */}
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Infrastructure Dashboard</h1>
-        <Button className="bg-green-600 hover:bg-green-700 text-white">+ New Project</Button>
+        <Button
+          className="bg-green-600 hover:bg-green-700 text-white"
+          onClick={() => setShowForm(true)}  // ✅ Open form
+        >
+          + New Project
+        </Button>
       </div>
+
+      {/* Modal (only appears when showForm = true) */}
+      {showForm && (
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div className="bg-white p-6 rounded-lg shadow-lg w-[400px] relative z-50">
+          <NewProject
+            onSuccess={(newProject) => {
+              setProjects((prev) => [...prev, newProject]); // instantly update list
+              setShowForm(false); // close modal
+            }}
+          />
+
+          <Button
+            className="mt-4 bg-red-500 hover:bg-red-600 text-white"
+            onClick={() => setShowForm(false)}
+          >
+            Close
+          </Button>
+        </div>
+      </div>
+)}
+
+    </div>
 
       {/* Dashboard Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -40,7 +81,7 @@ export default function Home() {
         <Card>
           <CardContent className="p-4">
             <p className="text-gray-500">Number of projects in Progress</p>
-            <h2 className="text-2xl font-bold">8</h2>
+            <h2 className="text-2xl font-bold">{projects.length}</h2>
           </CardContent>
         </Card>
       </div>
@@ -73,41 +114,25 @@ export default function Home() {
       </div>
 
       {/* Ongoing Projects */}
-      <h2 className="text-xl font-semibold mt-8">Ongoing Projects (8)</h2>
+      <h2 className="text-xl font-semibold mt-8">
+        Ongoing Projects ({projects.length})
+      </h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Project Card */}
-        <Card>
-          <CardContent className="p-4">
-            <h3 className="font-bold">Main Street Bridge</h3>
-            <p className="text-sm text-gray-500">Bridge Construction</p>
-            <p className="mt-2 text-gray-600">Central District</p>
-            <p className="text-gray-500">$2.4M / $3M</p>
-            <Progress value={72} className="mt-3" />
-            <p className="text-sm mt-1">Progress: 72%</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <h3 className="font-bold">Riverside Park</h3>
-            <p className="text-sm text-gray-500">Public Space</p>
-            <p className="mt-2 text-gray-600">North District</p>
-            <p className="text-gray-500">$1.2M / $1.8M</p>
-            <Progress value={45} className="mt-3" />
-            <p className="text-sm mt-1">Progress: 45%</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <h3 className="font-bold">Downtown Sewer Upgrade</h3>
-            <p className="text-sm text-gray-500">Utility</p>
-            <p className="mt-2 text-gray-600">Central District</p>
-            <p className="text-gray-500">$3.1M / $4.5M</p>
-            <Progress value={38} className="mt-3" />
-            <p className="text-sm mt-1">Progress: 38%</p>
-          </CardContent>
-        </Card>
+        {projects.map((project) => {
+          const progress = Math.round((project.spent / project.budget) * 100);
+          return (
+            <Card key={project.id}>
+              <CardContent className="p-4">
+                <h3 className="font-bold">{project.projectname}</h3>
+                <p className="text-sm text-gray-500">{project.type}</p>
+                <p className="mt-2 text-gray-600">{project.location}</p>
+                <p className="text-gray-500">${project.spent} / ${project.budget}</p>
+                <Progress value={progress} className="mt-3" />
+                <p className="text-sm mt-1">Progress: {progress}%</p>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       {/* Risk Heatmap */}
