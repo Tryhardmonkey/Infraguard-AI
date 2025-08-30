@@ -7,6 +7,7 @@ import CircularProgress from "@/components/ui/circularprogress";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import NewProject from "@/components/NewProject";
+import RescheduleModal from "@/components/RescheduleModal";
 
 export default function Home() {
   const [projects, setProjects] = useState([]);
@@ -17,6 +18,20 @@ export default function Home() {
       .then((res) => setProjects(res.data))
       .catch((err) => console.error("❌ Error fetching ongoing projects:", err));
   }, []);
+
+  // Function to get the nearest upcoming inspection
+  const getNearestInspection = (projects) => {
+  const today = new Date();
+  const upcoming = projects
+    .filter(p => p.next_inspection) // ignore null/undefined dates
+    .map(p => ({ ...p, nextDate: new Date(p.next_inspection) }))
+    .filter(p => p.nextDate >= today) // only future dates
+    .sort((a, b) => a.nextDate - b.nextDate); // sort ascending
+
+  return upcoming.length ? upcoming[0] : null; // return nearest project or null
+  };
+
+  const nearestProject = getNearestInspection(projects);
 
   return (
     <div className="p-6 space-y-6">
@@ -102,16 +117,37 @@ export default function Home() {
         <div className="space-y-4">
           <UploadSection />
 
-          <Card>
-            <CardContent className="p-4">
-              <p className="text-gray-500">Next Inspection</p>
-              <h2 className="text-lg font-bold">May 15, 2023</h2>
-              <p className="text-sm text-blue-600">2 days left</p>
-              <Button className="mt-2 w-full">Reschedule</Button>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+        <Card>
+        <CardContent className="p-4">
+          <p className="text-gray-500">Next Inspection</p>
+          {nearestProject ? (
+            <>
+              <h2 className="text-lg font-bold">
+                {new Date(nearestProject.next_inspection).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </h2>
+              <p className="text-sm text-blue-600">
+                {Math.ceil(
+                  (new Date(nearestProject.next_inspection) - new Date()) / (1000 * 60 * 60 * 24)
+                )}{" "}
+                days left
+              </p>
+              <p className="mt-2 text-gray-600">{nearestProject.projectname}</p> 
+            </>
+          ) : (
+            <p className="text-gray-500">No upcoming inspections</p>
+          )}
+
+          <Button className="mt-2 w-full" onClick={() => setShowReschedule(true)}>
+            Reschedule
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  </div>
 
       {/* Ongoing Projects */}
       <h2 className="text-xl font-semibold mt-8">
@@ -152,4 +188,5 @@ export default function Home() {
       </Card>
     </div>
   );
+
 }

@@ -46,4 +46,23 @@ router.get("/:userId", async (req, res) => {
   }
 });
 
+// PUT /api/projects/:id/reschedule
+// Update next_inspection for a project
+router.put("/:projectId/reschedule", async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const { next_inspection } = req.body;
+
+    const result = await db.query(
+      "UPDATE projects SET next_inspection = $1 WHERE id = $2 RETURNING *",
+      [next_inspection, projectId]
+    );
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    console.error("❌ Error updating next_inspection:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 export default router;
