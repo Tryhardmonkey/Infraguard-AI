@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Progress from "@/components/ui/Progress";
+import UploadSection from "@/components/UploadForm";
 import { Wallet, Calendar, CheckCircle, AlertTriangle, FileUp, Bell } from "lucide-react";
 import CircularProgress from "@/components/ui/circularprogress";
 
@@ -38,8 +39,8 @@ export default function Home() {
 
         <Card>
           <CardContent className="p-4">
-            <p className="text-gray-500">Completion</p>
-            <h2 className="text-2xl font-bold">64%</h2>
+            <p className="text-gray-500">Number of projects in Progress</p>
+            <h2 className="text-2xl font-bold">8</h2>
           </CardContent>
         </Card>
       </div>
@@ -58,13 +59,7 @@ export default function Home() {
 
         {/* Side Info */}
         <div className="space-y-4">
-          <Card>
-            <CardContent className="p-4">
-              <p className="text-gray-500">Receipts & Design Files</p>
-              <h2 className="text-lg font-bold">0 files</h2>
-              <Button className="mt-2 w-full bg-green-100 text-green-700">Upload New</Button>
-            </CardContent>
-          </Card>
+          <UploadSection />
 
           <Card>
             <CardContent className="p-4">

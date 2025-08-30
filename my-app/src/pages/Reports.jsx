@@ -16,8 +16,6 @@ export default function Reports() {
 
   return (
     <div className="flex">
-
-
       {/* Main Content */}
       <main className="flex-1 p-6">
         <div className="flex justify-between items-center mb-4">
