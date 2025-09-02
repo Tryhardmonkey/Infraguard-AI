@@ -11,7 +11,6 @@ import RescheduleModal from "@/components/RescheduleModal";
 export default function Home() {
   const [projects, setProjects] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [showReschedule, setShowReschedule] = useState(false);
 
   const userId = 1;
 
@@ -121,19 +120,6 @@ export default function Home() {
           </div>
         </CardContent>
       </Card>
-
-      {/* Reschedule Modal */}
-      {showReschedule && (
-        <RescheduleModal
-          projects={ongoingProjects}
-          onClose={() => setShowReschedule(false)}
-          onSuccess={(updatedProject) =>
-            setProjects((prev) =>
-              prev.map((p) => (p.id === updatedProject.id ? updatedProject : p))
-            )
-          }
-        />
-      )}
     </div>
   );
 }
@@ -151,6 +137,7 @@ function StatCard({ title, value }) {
 }
 
 function InspectionCard({ project, onReschedule }) {
+  const [showReschedule, setShowReschedule] = useState(false);
   if (!project)
     return (
       <Card>
@@ -165,9 +152,9 @@ function InspectionCard({ project, onReschedule }) {
     (new Date(project.next_inspection) - new Date()) / (1000 * 60 * 60 * 24)
   );
 
-  return (
+    return (
     <Card>
-      <CardContent className="p-4">
+      <CardContent className="p-4 relative">
         <p className="text-gray-500">Next Inspection</p>
         <h2 className="text-lg font-bold">
           {new Date(project.next_inspection).toLocaleDateString("en-US", {
@@ -178,9 +165,23 @@ function InspectionCard({ project, onReschedule }) {
         </h2>
         <p className="text-sm text-blue-600">{daysLeft} days left</p>
         <p className="mt-2 text-gray-600">{project.projectname}</p>
-        <Button className="mt-2 w-full" onClick={onReschedule}>
+
+        {/* Reschedule Button */}
+        <Button className="mt-2 w-full" onClick={() => setShowReschedule(true)}>
           Reschedule
         </Button>
+
+        {/* Reschedule Modal (popup) */}
+        {showReschedule && (
+          <RescheduleModal
+            projects={[project]}
+            onClose={() => setShowReschedule(false)}
+            onSuccess={(updatedProject) => {
+              onReschedule(updatedProject);
+              setShowReschedule(false);
+            }}
+          />
+        )}
       </CardContent>
     </Card>
   );
