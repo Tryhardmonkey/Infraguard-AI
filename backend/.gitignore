@@ -1,0 +1,56 @@
+# Node dependencies
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment variables
+.env
+
+# Database config file
+db.js
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Build output
+dist/
+build/
+
+# Coverage / testing
+coverage/
+.nyc_output/
+
+# Debugging
+*.pid
+*.seed
+*.pid.lock
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# IDE / Editors
+.vscode/
+.idea/
+*.swp
+
+# Temporary files
+tmp/
+temp/
+
+# pm2 logs
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Misc
+.env.local
+.env.*.local
